@@ -62,11 +62,9 @@ class BytenodeWebpackPlugin implements WebpackPluginInstance {
     }
 
     // @ts-ignore: The plugin supports string[] but the type doesn't
-    new ExternalsPlugin('commonjs', externals)
-      .apply(compiler);
+    new ExternalsPlugin('commonjs', externals).apply(compiler);
 
-    new WebpackVirtualModules(virtualModules)
-      .apply(compiler);
+    new WebpackVirtualModules(virtualModules).apply(compiler);
 
     this.debug('modified options', {
       devtool: compiler.options.devtool,
@@ -269,22 +267,53 @@ class BytenodeWebpackPlugin implements WebpackPluginInstance {
   }
 }
 
-function prepare(context: string | undefined, location: string | string[] | { import: string } | { import: string }[], name?: string, suffix = ''): Prepared {
+type Webpack4LocationSingle = string
+type Webpack4LocationMultiple = Webpack4LocationSingle[]
+type Webpack4Location = Webpack4LocationSingle | Webpack4LocationMultiple
+type Webpack5LocationSingle = { import: string }
+type Webpack5LocationMultiple = Webpack5LocationSingle[]
+type Webpack5Location = Webpack5LocationSingle | Webpack5LocationMultiple
+type WebpackLocation = Webpack4Location | Webpack5Location
+
+function isWebtype5LocationSingle(location: WebpackLocation): location is Webpack5LocationSingle {
+  return (location as Webpack5LocationSingle).import !== undefined
+}
+
+function isWebtype5LocationMultiple(location: WebpackLocation): location is Webpack5LocationMultiple {
+  return Array.isArray(location) && (location as Webpack5LocationMultiple)[0].import !== undefined
+}
+
+function isWebtype4LocationMultiple(location: WebpackLocation): location is Webpack4LocationMultiple {
+  return Array.isArray(location) && typeof location[0] === 'string'
+}
+
+function isWebtype4LocationSingle(location: WebpackLocation): location is Webpack4LocationSingle {
+  return typeof location === 'string'
+}
+
+function normalizeLocation(location: Webpack4Location | Webpack5Location): Webpack4LocationMultiple {
+  if (isWebtype5LocationSingle(location)) {
+    return [location.import].flat()
+  }
+  if (isWebtype5LocationMultiple(location)) {
+    return location.map(i => i.import).flat()
+  }
+  if (isWebtype4LocationMultiple(location)) {
+    return location.flat()
+  }
+  if (isWebtype4LocationSingle(location)) {
+    return [location]
+  }
+  throw new Error('Unrecognized entry format. Is this webpack 6?')
+}
+
+function prepare(context: string | undefined, location: Webpack4Location | Webpack5Location, name?: string, suffix = ''): Prepared {
   const locationArray = Array.isArray(location) ? location : [location];
 
-  const locations = locationArray
-    .map(location => {
-      if (typeof location === 'object' && location.import) {
-        return location.import
-      } else if (typeof location === 'string') {
-        return location
-      } else if (Array.isArray(location)) {
-        return location
-      } else {
-        throw new Error('Could not read entry location')
-      }
-    })
-    .flat()
+  // normalize locations to webpack4Multie
+  const normalizedLocations = locationArray.map(i => normalizeLocation(i))
+  const flattenedLocations = normalizedLocations.flat()
+  const locations = flattenedLocations
     .map(location => {
       const dependency = isDependency(location);
 
@@ -320,7 +349,7 @@ function prepare(context: string | undefined, location: string | string[] | { im
     basename = single.basename ?? basename;
   }
 
-  name = name ? name  + suffix : basename;
+  name = name ? name + suffix : basename;
 
   return {
     extension: '.js', locations, name,
