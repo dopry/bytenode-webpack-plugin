@@ -5,7 +5,7 @@ import webpack from 'webpack';
 import type { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
 
-import { BytenodeWebpackPlugin } from '../../src';
+import { BytenodeWebpackPlugin } from '../../src/index';
 import type { Options } from '../../src/types';
 
 const defaultWebpackOptions: Configuration = {
@@ -41,14 +41,21 @@ async function runWebpack(webpackOptions: Configuration, pluginOptions?: Partial
 
   return new Promise((resolve, reject) => {
     webpack(webpackOptions, (error, stats) => {
-      if (error || stats.hasErrors()) {
-        reject(error ?? stats.toString());
+      if (error) {
+        return reject(error);
       }
-
-      const { assets } = stats.toJson();
-      const names = assets?.map(asset => asset.name);
-
-      resolve(names);
+      if (stats) {
+        if (stats.hasErrors()) {
+          return reject(stats.toString());
+        }
+        const { assets } = stats.toJson();
+        if (assets) {
+          const names = assets.map(asset => asset.name);
+          return resolve(names);
+        }
+        resolve([]);
+      }
+      reject('No error or stats, something in webpack went awry')
     });
   });
 }
