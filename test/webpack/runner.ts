@@ -5,8 +5,8 @@ import webpack from 'webpack';
 import type { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
 
+import type { BytenodeWebpackPluginOptions } from '../../src';
 import { BytenodeWebpackPlugin } from '../../src';
-import type { Options } from '../../src/types';
 
 const defaultWebpackOptions: Configuration = {
   context: __dirname,
@@ -18,13 +18,16 @@ const defaultWebpackOptions: Configuration = {
   target: 'node',
 };
 
-const defaultPluginOptions: Partial<Options> = {
-  silent: true,
-};
+const defaultPluginOptions: Partial<BytenodeWebpackPluginOptions> = {};
 
-async function runWebpack(webpackOptions: Configuration, pluginOptions?: Partial<Options>): Promise<string[] | undefined> {
+async function runWebpack(webpackOptions: Configuration, pluginOptions?: Partial<BytenodeWebpackPluginOptions>): Promise<string[] | undefined> {
   pluginOptions = { ...defaultPluginOptions, ...pluginOptions };
   webpackOptions = merge(defaultWebpackOptions, webpackOptions, {
+    infrastructureLogging: {
+      colors: true,
+      debug: 'BytenodeWebpackPlugin',
+      level: 'verbose',
+    },
     plugins: [
       new BytenodeWebpackPlugin(pluginOptions),
     ],
@@ -41,11 +44,14 @@ async function runWebpack(webpackOptions: Configuration, pluginOptions?: Partial
 
   return new Promise((resolve, reject) => {
     webpack(webpackOptions, (error, stats) => {
-      if (error || stats.hasErrors()) {
-        reject(error ?? stats.toString());
+      if (error) {
+        reject(error);
+      }
+      if (stats && stats.hasErrors()) {
+        reject(stats.toString());
       }
 
-      const { assets } = stats.toJson();
+      const { assets } = stats && stats.toJson() || { assets: undefined };
       const names = assets?.map(asset => asset.name);
 
       resolve(names);

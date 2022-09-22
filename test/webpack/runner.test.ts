@@ -1,7 +1,6 @@
 import { runWebpack } from './runner';
 
 describe('runner', () => {
-
   test('should reject an invalid entry', async () => {
     const runner = runWebpack({
       entry: './fixtures/invalid.js',
@@ -10,16 +9,14 @@ describe('runner', () => {
     await expect(runner).rejects.toContain('not found');
   });
 
-  test('should throw on an invalid output path', async () => {
-    const runner = runWebpack({
+  test('should compile a single entry', async () => {
+    const names = await runWebpack({
       entry: './fixtures/first.js',
-      output: {
-        // @ts-expect-error
-        path: null,
-      },
     });
 
-    await expect(runner).rejects.toThrow();
+    expect(names).toEqual([
+      'main.js.jsc',
+      'main.js', 
+    ]);
   });
-
 });

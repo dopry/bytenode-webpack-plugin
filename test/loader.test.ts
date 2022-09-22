@@ -63,10 +63,9 @@ describe('createLoaderCode', () => {
 });
 
 async function testLoaderCode(from: string, to: string): Promise<void> {
-  const { createLoaderCode } = await import('../src/loader');
+  const { createLoaderCode } = await import('../src/');
 
-  expect(createLoaderCode(from)).toBe(`
-    require('bytenode');
-    require('${to}');
-  `);
+  expect(createLoaderCode(from)).toBe(`require('bytenode');
+require('${to}');
+`);
 }

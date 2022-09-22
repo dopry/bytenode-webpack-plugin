@@ -2,9 +2,15 @@ name: release
 
 on:
   workflow_dispatch:
+  
+  push:
+    branches: [ main, next ]
+    paths-ignore:
+      - '**.md'
 
 env:
   node: 15
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
 
