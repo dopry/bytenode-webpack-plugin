@@ -1,8 +1,10 @@
 import Module from 'module';
-import path from 'path';
+import { platform } from 'os';
+import path, { win32 } from 'path';
 import v8 from 'v8';
 
 import { compileCode, compileElectronCode } from 'bytenode';
+import slash from 'slash';
 import type { Hook } from 'tapable';
 import type {
   Compiler,
@@ -15,7 +17,6 @@ import {
 } from 'webpack';
 import WebpackVirtualModules from 'webpack-virtual-modules';
 
-import { createLoaderCode } from './loader';
 import { toRelativeImportPath } from './paths';
 import type {
   Options,
@@ -27,11 +28,17 @@ import type {
 
 v8.setFlagsFromString('--no-lazy');
 
+/**
+ * @param {string} location
+ */
 class BytenodeWebpackPlugin implements WebpackPluginInstance {
+  // For every entrypoint, this plugin convert the final js output to bytecode in a file called [name].compiled.jsc 
+  // and a [name].loader.js that will load the bytecode file and execute it.
   private readonly name = 'BytenodeWebpackPlugin';
   private readonly options: Options;
 
   constructor(options: Partial<Options> = {}) {
+    // default option values pass to the plugin.
     this.options = {
       compileAsModule: true,
       compileForElectron: false,
@@ -44,10 +51,13 @@ class BytenodeWebpackPlugin implements WebpackPluginInstance {
     };
   }
 
+
+
   apply(compiler: Compiler): void {
     // apply is the entry point for the webpack plugin API
     // here is where we want to hook into the compiler
     // in order to have the assets compiled with bytenode.
+
     this.setupLifecycleLogging(compiler);
 
     this.debug('original options', {
@@ -59,8 +69,11 @@ class BytenodeWebpackPlugin implements WebpackPluginInstance {
 
     // We need to process our compiler options before the compilation starts
     // TODO: review whether this can be done in the constructor instead
-    const { entry, entryLoaders, externals, output, virtualModules } =
-      this.processOptions(compiler.options);
+    const { entry, entryLoaders, externals, output, virtualModules } = this.processOptions(compiler.options);
+    const outputExtensionRegex = new RegExp(
+      '\\' + output.extension + '$',
+      'i'
+    );
 
     this.debug('processed options', {
       entry,
@@ -88,6 +101,18 @@ class BytenodeWebpackPlugin implements WebpackPluginInstance {
     });
 
     compiler.hooks.thisCompilation.tap(this.name, (compilation) => {
+      // aggregate loader files by filename
+      const entryLoaderFiles: string[] = [];
+
+      for (const entryLoader of entryLoaders) {
+        const entryPoints = compilation.entrypoints;
+        const entryPoint = entryPoints.get(entryLoader);
+        const files = entryPoint?.getFiles() ?? [];
+
+        entryLoaderFiles.push(...files);
+      }
+
+
       compilation.hooks.processAssets.tapPromise(
         {
           name: this.name,
@@ -95,20 +120,8 @@ class BytenodeWebpackPlugin implements WebpackPluginInstance {
           stage: Compilation.PROCESS_ASSETS_STAGE_DERIVED,
         },
         async (assets): Promise<void> => {
-          const entryLoaderFiles: string[] = [];
-
-          for (const entryLoader of entryLoaders) {
-            const entryPoints = compilation.entrypoints;
-            const entryPoint = entryPoints.get(entryLoader);
-            const files = entryPoint?.getFiles() ?? [];
-
-            entryLoaderFiles.push(...files);
-          }
-
-          const outputExtensionRegex = new RegExp(
-            '\\' + output.extension + '$',
-            'i'
-          );
+          console.log('compilation.hooks.processAssets.tapPromise', compilation.entrypoints);
+          
           const shouldCompile = (name: string): boolean => {
             return (
               outputExtensionRegex.test(name) &&
@@ -201,7 +214,7 @@ class BytenodeWebpackPlugin implements WebpackPluginInstance {
         if (!e.dependency) {
           virtualModules.push([
             e.location,
-            createLoaderCode(relativeImportPath),
+            this._createLoaderCode(relativeImportPath),
           ]);
         }
       }
@@ -333,6 +346,22 @@ class BytenodeWebpackPlugin implements WebpackPluginInstance {
         }
       }
     }
+  }
+
+  _createLoaderCode(relativePath: string): string { 
+    // do not confuse this with a webpack loader. This is a virtual module that will be used to
+    // replacen and load the compiled code. 
+    if (/win32/.test(platform()) && win32.isAbsolute(relativePath)) {
+      relativePath = win32.normalize(relativePath);
+      relativePath = relativePath.replace(/\\/g, '\\\\');
+    } else {
+      relativePath = slash(relativePath);
+    }
+  
+    return `
+      require('bytenode');
+      require('${relativePath}');
+    `;
   }
 }
 

@@ -1,4 +1,4 @@
-interface Options {
+interface IBytenodeWebpackPluginOptions {
   compileAsModule: boolean;
   compileForElectron: boolean;
   debugLifecycle: boolean;
@@ -43,7 +43,7 @@ interface ProcessedOptions {
 }
 
 export type {
-  Options,
+  IBytenodeWebpackPluginOptions as Options,
   Prepared,
   PreprocessedEntry,
   PreprocessedOutput,
