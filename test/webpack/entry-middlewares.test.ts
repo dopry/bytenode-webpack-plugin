@@ -9,7 +9,7 @@ describe('entry middlewares', () => {
       });
 
       expect(assets).toStrictEqual([
-        'main.compiled.jsc',
+        'main.js.jsc',
         'main.js',
       ]);
     });
@@ -20,7 +20,7 @@ describe('entry middlewares', () => {
       });
 
       expect(assets).toStrictEqual([
-        'main.compiled.jsc',
+        'main.js.jsc',
         'main.js',
       ]);
     });
@@ -35,7 +35,7 @@ describe('entry middlewares', () => {
         });
 
         expect(assets).toStrictEqual([
-          'main.compiled.jsc',
+          'named.js.jsc',
           'named.js',
         ]);
       });
@@ -49,7 +49,7 @@ describe('entry middlewares', () => {
         });
 
         expect(assets).toStrictEqual([
-          'main.compiled.jsc',
+          'named.js.jsc',
           'named.js',
         ]);
       });
@@ -65,7 +65,7 @@ describe('entry middlewares', () => {
       });
 
       expect(assets).toStrictEqual([
-        'firstNamed.compiled.jsc',
+        'firstNamed.js.jsc',
         'firstNamed.js',
       ]);
     });
@@ -78,7 +78,7 @@ describe('entry middlewares', () => {
       });
 
       expect(assets).toStrictEqual([
-        'firstNamed.compiled.jsc',
+        'firstNamed.js.jsc',
         'firstNamed.js',
       ]);
     });
@@ -95,7 +95,7 @@ describe('entry middlewares', () => {
         });
 
         expect(assets).toStrictEqual([
-          'firstNamed.compiled.jsc',
+          'named.js.jsc',
           'named.js',
         ]);
       });
@@ -111,7 +111,7 @@ describe('entry middlewares', () => {
         });
 
         expect(assets).toStrictEqual([
-          'firstNamed.compiled.jsc',
+          'named.js.jsc',
           'named.js',
         ]);
       });

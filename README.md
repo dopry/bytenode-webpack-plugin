@@ -30,8 +30,7 @@ npm install --save @herberttn/bytenode-webpack-plugin
 - [`electron-forge`][link-to-electron-forge]
   - :heavy_check_mark:  Default configuration
 - [`webpack`][link-to-webpack]
-  - :heavy_check_mark:  v4
-  - :grey_question:  v5
+  - :heavy_check_mark:  v5
   - :heavy_check_mark:   `entry` as a `string` (e.g., `'src/index.js'`)
   - :heavy_check_mark:   `entry` as an `array` (e.g., `['src/index.js']`)
   - :heavy_check_mark:   `entry` as an `object` (e.g., `{ main: 'src/index.js' }`)
@@ -65,26 +64,14 @@ module.exports = {
 ### Options
 ```typescript
 interface Options {
-  compileAsModule: boolean;    // wraps the code in a node module
   compileForElectron: boolean; // compiles for electron instead of plain node
-  debugLifecycle: boolean;     // enables webpack hooks lifecycle logs
-  debugLogs: boolean;          // enables debug logs
-  keepSource: boolean;         // emits the original source files along with the compiled ones
-  preventSourceMaps: boolean;  // prevents source maps from being generated
-  silent: boolean;             // disables all logs, but not errors thrown (overrides debug flags)
 }
 ```
 
 #### Default options
 ```typescript
 new BytenodeWebpackPlugin({
-  compileAsModule: true,
   compileForElectron: false,
-  debugLifecycle: false,
-  debugLogs: false,
-  keepSource: false,
-  preventSourceMaps: true,
-  silent: false,
 })
 ```
 
@@ -104,6 +91,13 @@ new BytenodeWebpackPlugin({
         <img src="https://avatars.githubusercontent.com/u/321284?v=4" width="120;" alt="jjeff"/>
         <br />
         <sub><b>Jeff Robbins</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/dopry">
+        <img src="https://avatars.githubusercontent.com/u/387640?v=4" width="120;" alt="dopry"/>
+        <br />
+        <sub><b>Darrel O'Pry</b></sub>
       </a>
     </td>
   </tr>

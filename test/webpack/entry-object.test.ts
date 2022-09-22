@@ -10,7 +10,7 @@ describe('entry as an object', () => {
     });
 
     expect(assets).toStrictEqual([
-      'named.compiled.jsc',
+      'named.js.jsc',
       'named.js',
     ]);
   });
@@ -26,8 +26,8 @@ describe('entry as an object', () => {
     });
 
     expect(assets).toStrictEqual([
+      'index.js.jsc',
       'index.js',
-      'named.compiled.jsc',
     ]);
   });
 
@@ -41,11 +41,11 @@ describe('entry as an object', () => {
     });
 
     expect(assets).toStrictEqual([
-      'firstNamed.compiled.jsc',
-      'firstNamed.js',
-      'secondNamed.compiled.jsc',
+      'firstNamed.js.jsc',
+      'secondNamed.js.jsc',
+      'thirdNamed.js.jsc',
       'secondNamed.js',
-      'thirdNamed.compiled.jsc',
+      'firstNamed.js',
       'thirdNamed.js',
     ]);
   });
@@ -58,15 +58,17 @@ describe('entry as an object', () => {
         thirdNamed: './fixtures/third.js',
       },
       output: {
-        filename: 'index.js',
+        filename: '[name].js',
       },
     });
 
     expect(assets).toStrictEqual([
-      'firstNamed.compiled.jsc',
-      'index.js',
-      'secondNamed.compiled.jsc',
-      'thirdNamed.compiled.jsc',
+      'firstNamed.js.jsc',
+      'secondNamed.js.jsc',
+      'thirdNamed.js.jsc',
+      'secondNamed.js',
+      'firstNamed.js',
+      'thirdNamed.js',
     ]);
   });
 

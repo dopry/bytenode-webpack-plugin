@@ -1,5 +1,5 @@
 {
-  "name": "@herberttn/bytenode-webpack-plugin",
+  "name": "@dopry/bytenode-webpack-plugin",
   "description": "Compile JavaScript into bytecode using bytenode",
   "version": "1.2.5",
   "license": "MIT",
@@ -22,20 +22,21 @@
     "test": "jest --config jest.config.ts --detectOpenHandles",
     "test:watch": "npm run test -- --watch"
   },
+  "dependencies_comments": {
+    "bytenode": "pinned at 1.3.4 because electron is not found in 1.3.5 and 1.3.6, see: https://github.com/bytenode/bytenode/issues/180"
+  },
   "dependencies": {
-    "bytenode": "^1.2.2",
-    "slash": "3.0.0",
-    "webpack-virtual-modules": "^0.4.2"
+    "bytenode": "1.3.4",
+    "slash": "3.0.0"
   },
   "peerDependencies": {
-    "webpack": "4.x"
+    "webpack": ">= 5.0.0"
   },
   "devDependencies": {
     "@jest/types": "26.6.2",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/git": "9.0.0",
     "@types/jest": "26.0.22",
-    "@types/webpack": "^4.41.27",
     "@typescript-eslint/eslint-plugin": "4.19.0",
     "@typescript-eslint/parser": "4.19.0",
     "eslint": "7.23.0",
@@ -74,6 +75,10 @@
     {
       "name": "jjeff",
       "url": "https://github.com/jjeff"
+    },
+    {
+      "name": "Darrel O'Pry",
+      "url": "https://github.com/dopry"
     }
   ]
 }
