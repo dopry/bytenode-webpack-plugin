@@ -8,8 +8,8 @@ describe('entry as an array of strings', () => {
     });
 
     expect(assets).toStrictEqual([
-      'first.compiled.jsc',
-      'first.js',
+      'main.js.jsc',
+      'main.js',
     ]);
   });
 
@@ -22,7 +22,7 @@ describe('entry as an array of strings', () => {
     });
 
     expect(assets).toStrictEqual([
-      'first.compiled.jsc',
+      'named.js.jsc',
       'named.js',
     ]);
   });
@@ -33,7 +33,7 @@ describe('entry as an array of strings', () => {
     });
 
     expect(assets).toStrictEqual([
-      'main.compiled.jsc',
+      'main.js.jsc',
       'main.js',
     ]);
   });
@@ -47,7 +47,7 @@ describe('entry as an array of strings', () => {
     });
 
     expect(assets).toStrictEqual([
-      'main.compiled.jsc',
+      'named.js.jsc',
       'named.js',
     ]);
   });
@@ -64,7 +64,7 @@ describe('entry as an object of arrays', () => {
     });
 
     expect(assets).toStrictEqual([
-      'first.compiled.jsc',
+      'first.js.jsc',
       'first.js',
     ]);
   });
@@ -78,7 +78,7 @@ describe('entry as an object of arrays', () => {
     });
 
     expect(assets).toStrictEqual([
-      'first.compiled.jsc',
+      'named.js.jsc',
       'named.js',
     ]);
   });
@@ -91,7 +91,7 @@ describe('entry as an object of arrays', () => {
     });
 
     expect(assets).toStrictEqual([
-      'named.compiled.jsc',
+      'named.js.jsc',
       'named.js',
     ]);
   });
@@ -107,8 +107,8 @@ describe('entry as an object of arrays', () => {
     });
 
     expect(assets).toStrictEqual([
+      'index.js.jsc',
       'index.js',
-      'named.compiled.jsc',
     ]);
   });
 
@@ -122,11 +122,11 @@ describe('entry as an object of arrays', () => {
     });
 
     expect(assets).toStrictEqual([
-      'firstNamed.compiled.jsc',
-      'firstNamed.js',
-      'secondNamed.compiled.jsc',
+      'firstNamed.js.jsc',
+      'secondNamed.js.jsc',
+      'thirdNamed.js.jsc',
       'secondNamed.js',
-      'thirdNamed.compiled.jsc',
+      'firstNamed.js',
       'thirdNamed.js',
     ]);
   });
@@ -139,15 +139,17 @@ describe('entry as an object of arrays', () => {
         thirdNamed: ['./fixtures/third.js'],
       },
       output: {
-        filename: 'index.js',
+        filename: '[name].js',
       },
     });
 
     expect(assets).toStrictEqual([
-      'firstNamed.compiled.jsc',
-      'index.js',
-      'secondNamed.compiled.jsc',
-      'thirdNamed.compiled.jsc',
+      'firstNamed.js.jsc',
+      'secondNamed.js.jsc',
+      'thirdNamed.js.jsc',
+      'secondNamed.js',
+      'firstNamed.js',
+      'thirdNamed.js',
     ]);
   });
 
@@ -160,9 +162,9 @@ describe('entry as an object of arrays', () => {
     });
 
     expect(assets).toStrictEqual([
-      'firstNamed.compiled.jsc',
+      'mixNamed.js.jsc',
+      'firstNamed.js.jsc',
       'firstNamed.js',
-      'mixNamed.compiled.jsc',
       'mixNamed.js',
     ]);
   });
@@ -174,14 +176,15 @@ describe('entry as an object of arrays', () => {
         mixNamed: ['./fixtures/second.js', './fixtures/third.js'],
       },
       output: {
-        filename: 'index.js',
+        filename: '[name].js',
       },
     });
 
     expect(assets).toStrictEqual([
-      'firstNamed.compiled.jsc',
-      'index.js',
-      'mixNamed.compiled.jsc',
+      'mixNamed.js.jsc',
+      'firstNamed.js.jsc',
+      'firstNamed.js',
+      'mixNamed.js',
     ]);
   });
 

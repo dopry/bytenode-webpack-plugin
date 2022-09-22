@@ -8,8 +8,8 @@ describe('entry as a string', () => {
     });
 
     expect(assets).toStrictEqual([
-      'first.compiled.jsc',
-      'first.js',
+      'main.js.jsc',
+      'main.js',
     ]);
   });
 
@@ -22,7 +22,7 @@ describe('entry as a string', () => {
     });
 
     expect(assets).toStrictEqual([
-      'first.compiled.jsc',
+      'named.js.jsc',
       'named.js',
     ]);
   });

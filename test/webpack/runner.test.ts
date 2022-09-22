@@ -9,17 +9,4 @@ describe('runner', () => {
 
     await expect(runner).rejects.toContain('not found');
   });
-
-  test('should throw on an invalid output path', async () => {
-    const runner = runWebpack({
-      entry: './fixtures/first.js',
-      output: {
-        // @ts-expect-error
-        path: null,
-      },
-    });
-
-    await expect(runner).rejects.toThrow();
-  });
-
 });
