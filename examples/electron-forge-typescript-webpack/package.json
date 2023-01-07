@@ -24,7 +24,7 @@
     "@electron-forge/maker-squirrel": "^6.0.4",
     "@electron-forge/maker-zip": "^6.0.4",
     "@electron-forge/plugin-webpack": "^6.0.4",
-    "@herberttn/bytenode-webpack-plugin": "^2.3.0",
+    "@herberttn/bytenode-webpack-plugin": "file:../..",
     "@marshallofsound/webpack-asset-relocator-loader": "0.5.0",
     "@typescript-eslint/eslint-plugin": "5.41.0",
     "@typescript-eslint/parser": "5.41.0",

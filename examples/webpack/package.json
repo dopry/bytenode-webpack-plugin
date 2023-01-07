@@ -10,7 +10,7 @@
     "make": "npm run clean && webpack-cli"
   },
   "devDependencies": {
-    "@herberttn/bytenode-webpack-plugin": "^2.3.0",
+    "@herberttn/bytenode-webpack-plugin": "file:../..",
     "rimraf": "3.0.2",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"
